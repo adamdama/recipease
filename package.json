@@ -1,0 +1,76 @@
+{
+  "name": "recipease",
+  "version": "0.0.0",
+  "description": "App for managing recipes",
+  "author": {
+    "name": "Adam Cox",
+    "email": "adamdama@hotmail.com"
+  },
+  "contributors": [
+    {
+      "name": "Jane Bentley",
+      "email": "janevbentley@gmail.com"
+    }
+  ],
+  "main": "index.js",
+  "private": true,
+  "devDependencies": {
+    "eslint": "^6.8.0",
+    "eslint-config-prettier": "^6.10.0",
+    "husky": "^4.2.1",
+    "lint-staged": "^10.0.3",
+    "prettier": "^1.19.1"
+  },
+  "husky": {
+    "hooks": {
+      "pre-commit": "lint-staged"
+    }
+  },
+  "eslintConfig": {
+    "extends": [
+      "plugin:prettier/recommended"
+    ],
+    "plugins": [
+      "prettier"
+    ],
+    "rules": {
+      "extends": [
+        "prettier"
+      ],
+      "prettier/prettier": "error"
+    }
+  },
+  "prettier": {
+    "printWidth": 120,
+    "tabWidth": 4,
+    "overrides": [
+      {
+        "files": [
+          "*.yaml",
+          "*.yml",
+          "*.json"
+        ],
+        "options": {
+          "tabWidth": 2
+        }
+      }
+    ]
+  },
+  "lint-staged": {
+    "src/lambda/**/*.js": [
+      "yarn lint:autofix",
+      "git add"
+    ],
+    "*.{json,yaml,yml,gql,less,scss}": [
+      "prettier --write",
+      "git add"
+    ]
+  },
+  "scripts": {
+    "lint": "eslint --ext .js ./src --fix",
+    "lint:autofix": "yarn lint --fix",
+    "install": "yarn install:client && yarn install:server",
+    "install:client": "cd client && yarn -s",
+    "install:server": "cd server && yarn -s"
+  }
+}
