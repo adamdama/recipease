@@ -7,8 +7,14 @@
 
 <script lang="ts">
 import { Component, Vue } from "vue-property-decorator";
+import Navigation from "./components/Navigation.vue";
 
-@Component
+@Component({
+    name: "App",
+    components: {
+        Navigation
+    }
+})
 export default class App extends Vue {
     readonly name: string = "Recipease";
 }
