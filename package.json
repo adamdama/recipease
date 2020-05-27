@@ -14,63 +14,41 @@
   ],
   "main": "index.js",
   "private": true,
-  "devDependencies": {
-    "eslint": "^6.8.0",
-    "eslint-config-prettier": "^6.10.0",
-    "husky": "^4.2.1",
-    "lint-staged": "^10.0.3",
-    "prettier": "^1.19.1"
+  "workspaces": [
+    "server",
+    "client"
+  ],
+  "scripts": {
+    "lint": "yarn -s lint:client && yarn -s lint:server",
+    "lint:client": "cd client && yarn -s lint",
+    "lint:server": "cd server && yarn -s lint"
   },
-  "husky": {
-    "hooks": {
-      "pre-commit": "lint-staged"
-    }
-  },
-  "eslintConfig": {
-    "extends": [
-      "plugin:prettier/recommended"
-    ],
-    "plugins": [
-      "prettier"
-    ],
-    "rules": {
-      "extends": [
-        "prettier"
-      ],
-      "prettier/prettier": "error"
-    }
-  },
-  "prettier": {
-    "printWidth": 120,
-    "tabWidth": 4,
-    "overrides": [
-      {
-        "files": [
-          "*.yaml",
-          "*.yml",
-          "*.json"
-        ],
-        "options": {
-          "tabWidth": 2
-        }
-      }
-    ]
+  "gitHooks": {
+    "pre-commit": "lint-staged"
   },
   "lint-staged": {
-    "src/lambda/**/*.js": [
-      "yarn lint:autofix",
-      "git add"
+    "client/src/**/*.{js,ts,vue}": [
+      "yarn lint:client"
     ],
-    "*.{json,yaml,yml,gql,less,scss}": [
-      "prettier --write",
-      "git add"
+    "server/src/**/*.{js,ts}": [
+      "yarn lint:server"
+    ],
+    "*.{json,yaml,yml,gql,scss,md,html}": [
+      "prettier --write"
     ]
   },
-  "scripts": {
-    "lint": "eslint --ext .js ./src --fix",
-    "lint:autofix": "yarn lint --fix",
-    "install": "yarn install:client && yarn install:server",
-    "install:client": "cd client && yarn -s",
-    "install:server": "cd server && yarn -s"
+  "devDependencies": {
+    "@types/jest": "^24.0.19",
+    "@typescript-eslint/eslint-plugin": "^2.24.0",
+    "@typescript-eslint/parser": "^2.26.0",
+    "eslint": "^6.7.2",
+    "eslint-config-airbnb-typescript": "^7.2.1",
+    "eslint-config-prettier": "^6.11.0",
+    "eslint-plugin-import": "^2.20.1",
+    "eslint-plugin-prettier": "^3.1.1",
+    "lint-staged": "^10.0.3",
+    "prettier": "^2.0.5",
+    "typescript": "~3.8.3",
+    "yorkie": "^2.0.0"
   }
 }
