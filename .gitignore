@@ -9,6 +9,30 @@ lerna-debug.log*
 # Diagnostic reports (https://nodejs.org/api/report.html)
 report.[0-9]*.[0-9]*.[0-9]*.[0-9]*.json
 
+# OS
+.DS_Store
+
+# IDEs and editors
+.project
+.classpath
+.c9/
+*.launch
+.settings/
+*.sublime-workspace
+.idea
+*.suo
+*.ntvs*
+*.njsproj
+*.sln
+*.sw?
+
+# IDE - VSCode
+.vscode/*
+!.vscode/settings.json
+!.vscode/tasks.json
+!.vscode/launch.json
+!.vscode/extensions.json
+
 # Runtime data
 pids
 *.pid
@@ -51,7 +75,7 @@ typings/
 
 # dotenv environment variables file
 .env
-.env.test
+.env.*
 
 # parcel-bundler cache (https://parceljs.org/)
 .cache
@@ -59,5 +83,5 @@ typings/
 # Serverless directories
 .serverless/
 
-# Build artefacts
+# Build directories
 build

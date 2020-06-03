@@ -6,6 +6,6 @@
     2. Repo URL
     3. ~~License~~
 
-2. Add Lerna
+2. Add Lerna - maybe
 3. Upgrade to Vue 3
-4.
+4. GQL args types

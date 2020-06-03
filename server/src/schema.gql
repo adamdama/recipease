@@ -1,0 +1,23 @@
+# ------------------------------------------------------
+# THIS FILE WAS AUTOMATICALLY GENERATED (DO NOT MODIFY)
+# ------------------------------------------------------
+
+type Method {
+    steps: [MethodStep]!
+}
+
+type MethodStep {
+    orderNumber: Int!
+    title: String
+    description: String!
+}
+
+type Query {
+    getRecipe(id: ID!): Recipe!
+}
+
+type Recipe {
+    id: ID!
+    title: String!
+    method: Method!
+}
