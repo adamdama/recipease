@@ -19,5 +19,6 @@ type Query {
 type Recipe {
     id: ID!
     title: String!
+    description: String!
     method: Method!
 }

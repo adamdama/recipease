@@ -12,6 +12,9 @@ export class Recipe {
     title: string;
 
     @Field()
+    description: string;
+
+    @Field()
     method: Method;
 
     // @Field(() => URLTypeDefinition, { nullable: true })

@@ -3,13 +3,27 @@ import { Recipe } from "./models/recipe.model";
 
 @Injectable()
 export class RecipesService {
-    private db: Object;
+    private db: Recipe[];
 
     constructor() {
-        this.db = {};
+        this.db = [
+            {
+                id: "10",
+                title: "recipe one",
+                description: "best food",
+                method: {
+                    steps: [
+                        {
+                            orderNumber: 1,
+                            description: "put it in oven"
+                        }
+                    ]
+                }
+            }
+        ];
     }
 
     findOneById(id: string): Recipe {
-        return this.db[id];
+        return this.db.find((recipe) => recipe.id === id);
     }
 }
