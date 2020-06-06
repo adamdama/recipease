@@ -4,8 +4,10 @@ module.exports = {
         ecmaVersion: 2020,
         sourceType: "module"
     },
-    plugins: ["prettier", "@typescript-eslint/eslint-plugin"],
+    plugins: ["prettier", "@typescript-eslint/eslint-plugin", "jest"],
     extends: [
+        "plugin:jest/recommended",
+        "plugin:jest/style",
         "airbnb-typescript/base",
         "prettier",
         "prettier/@typescript-eslint",
@@ -28,9 +30,9 @@ module.exports = {
     },
     overrides: [
         {
-            files: ["tests/**/*.spec.{j,t}s?(x)"],
+            files: ["tests/**/*.(e2e-)?spec.{j,t}s?(x)"],
             env: {
-                jest: true
+                "jest/globals": true
             }
         }
     ]

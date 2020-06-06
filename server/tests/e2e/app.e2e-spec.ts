@@ -1,3 +1,4 @@
+/* eslint-disable */
 import { Test, TestingModule } from "@nestjs/testing";
 import { INestApplication } from "@nestjs/common";
 import * as request from "supertest";
@@ -16,6 +17,7 @@ describe("AppController (e2e)", () => {
     });
 
     it("/ (GET)", () => {
+        // TODO do this in a way that lints
         return request(app.getHttpServer())
             .get("/")
             .expect(200)

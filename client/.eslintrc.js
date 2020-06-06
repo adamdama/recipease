@@ -3,6 +3,8 @@ const baseConfig = require("../.eslintrc");
 module.exports = {
     ...baseConfig,
     extends: [
+        "plugin:jest/recommended",
+        "plugin:jest/style",
         "plugin:vue/strongly-recommended",
         "@vue/airbnb",
         "@vue/prettier",
