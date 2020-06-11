@@ -8,5 +8,7 @@
 
 2. Add Lerna - maybe
 3. Upgrade to Vue 3
-4. GQL args types
-5. SASS vue linting
+4. GQL args types - inputs
+5. SASS vue linting?
+6. User auth
+7. JSDoc everything in BE

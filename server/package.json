@@ -30,17 +30,25 @@
     "test:e2e": "jest --config ./tests/e2e/jest-e2e.json"
   },
   "dependencies": {
+    "@liberation-data/agensgraph": "^0.1.0-rc",
+    "@liberation-data/drivine": "^1.2.5",
     "@nestjs/common": "^7.0.0",
     "@nestjs/core": "^7.0.0",
     "@nestjs/graphql": "^7.4.1",
     "@nestjs/platform-express": "^7.0.0",
     "apollo-server-express": "^2.14.1",
+    "class-transformer": "^0.2.3",
+    "class-validator": "^0.11.0",
+    "dotenv": "^8.2.0",
     "graphql": "^14.0.0",
     "graphql-scalars": "^1.1.5",
     "graphql-tools": "^6.0.5",
+    "nanoid": "^3.1.9",
+    "neo4j-driver": "^4.0.2",
     "reflect-metadata": "^0.1.13",
     "rimraf": "^3.0.2",
-    "rxjs": "^6.5.4"
+    "rxjs": "^6.5.4",
+    "uuid": "^8.1.0"
   },
   "devDependencies": {
     "@nestjs/cli": "^7.0.0",
@@ -52,8 +60,6 @@
     "@types/supertest": "^2.0.8",
     "@typescript-eslint/eslint-plugin": "3.0.2",
     "@typescript-eslint/parser": "3.0.2",
-    "class-transformer": "^0.2.3",
-    "class-validator": "^0.12.2",
     "jest": "26.0.1",
     "supertest": "^4.0.2",
     "ts-jest": "26.1.0",

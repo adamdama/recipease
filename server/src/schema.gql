@@ -2,23 +2,24 @@
 # THIS FILE WAS AUTOMATICALLY GENERATED (DO NOT MODIFY)
 # ------------------------------------------------------
 
-type Method {
-    steps: [MethodStep]!
-}
-
-type MethodStep {
-    orderNumber: Int!
-    title: String
-    description: String!
+type Mutation {
+    addRecipe(title: String!, description: String, method: [String!]): Recipe!
+    updateRecipe(
+        id: String!
+        title: String!
+        description: String
+        method: [String!]
+    ): Recipe!
 }
 
 type Query {
-    getRecipe(id: ID!): Recipe!
+    recipes: [Recipe!]!
+    recipe(id: ID!): Recipe!
 }
 
 type Recipe {
     id: ID!
     title: String!
-    description: String!
-    method: Method!
+    description: String
+    method: [String!]
 }
