@@ -1,9 +1,10 @@
 import { Resolver, Args, Query, ID, Mutation } from "@nestjs/graphql";
-import { NotFoundException } from "@nestjs/common";
+import { NotFoundException, UseGuards } from "@nestjs/common";
 import { Recipe } from "./recipe.model";
 import { RecipesRepository } from "./recipes.repository";
 import { AddRecipeArgs } from "./dto/add-recipe.args";
 import { UpdateRecipeArgs } from "./dto/update-recipe.args";
+import { GraphQLAuthGuard } from "../common/guards/graphql.auth.guard";
 
 // TODO change NotFound error - not appropriate for GQL
 
@@ -11,8 +12,15 @@ import { UpdateRecipeArgs } from "./dto/update-recipe.args";
 export class RecipesResolver {
     constructor(private readonly recipesRepository: RecipesRepository) {}
 
+    // @Query()
+    // @UseGuards(GraphQLAuthGuard)
+    // whoAmI(@CurrentUser() user: User) {
+    //     return this.usersService.findById(user.id);
+    // }
+
     // TODO paginate this
     @Query(() => [Recipe], { name: "recipes" })
+    @UseGuards(GraphQLAuthGuard)
     async getRecipes() {
         const recipes = await this.recipesRepository.find();
         if (!recipes) {

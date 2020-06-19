@@ -10,11 +10,11 @@ module.exports = {
         "plugin:jest/style",
         "airbnb-typescript/base",
         "prettier",
-        "prettier/@typescript-eslint",
+        "prettier/@typescript-eslint"
     ],
     root: true,
     env: {
-        node: true,
+        node: true
     },
     rules: {
         // "@typescript-eslint/interface-name-prefix": "off",
@@ -25,6 +25,8 @@ module.exports = {
         "prettier/prettier": "error",
         "import/prefer-default-export": "off",
         "class-methods-use-this": "off",
+        "brace-style": "error",
+        curly: "error",
         "no-console": process.env.NODE_ENV === "production" ? "warn" : "off",
         "no-debugger": process.env.NODE_ENV === "production" ? "warn" : "off"
     },

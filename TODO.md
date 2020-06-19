@@ -12,3 +12,4 @@
 5. SASS vue linting?
 6. User auth
 7. JSDoc everything in BE
+8. ESLint ts in .vue

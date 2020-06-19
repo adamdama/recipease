@@ -1,15 +1,29 @@
 import Vue from "vue";
 import VueRouter, { RouteConfig } from "vue-router";
 import Home from "../views/Home.vue";
+import Login from "../views/Login.vue";
+import Profile from "../views/Profile.vue";
 import Recipes from "../views/Recipes.vue";
+import { authGuard } from "../auth";
 
 Vue.use(VueRouter);
 
-const routes: RouteConfig[] = [
+export const routes: RouteConfig[] = [
     {
         path: "/",
         name: "Home",
         component: Home
+    },
+    {
+        path: "/login",
+        name: "Login",
+        component: Login
+    },
+    {
+        path: "/profile",
+        name: "Profile",
+        component: Profile,
+        beforeEnter: authGuard
     },
     {
         path: "/recipes",

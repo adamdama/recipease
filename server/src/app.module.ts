@@ -7,6 +7,7 @@ import {
 } from "@liberation-data/drivine/DrivineModule";
 import { DatabaseRegistry } from "@liberation-data/drivine/connection/DatabaseRegistry";
 import { RecipesModule } from "./recipes/recipes.module";
+import { AuthModule } from "./auth/auth.module";
 
 const devMode = process.env.NODE_ENV === "development";
 const autoSchemaFile = join(process.cwd(), "src/schema.gql");
@@ -14,16 +15,20 @@ const gqlOptions = {
     autoSchemaFile,
     debug: devMode,
     playground: devMode,
-    introspection: devMode
+    introspection: devMode,
+    // Make sure the request object is added to the context so that the
+    //  authenticated user can be used
+    context: ({ req }) => ({ req })
 };
 
 @Module({
     imports: [
+        AuthModule,
         DrivineModule.withOptions(<DrivineModuleOptions>{
             connectionProviders: [DatabaseRegistry.buildOrResolveFromEnv()]
         }),
-        RecipesModule,
-        GraphQLModule.forRoot(gqlOptions)
+        GraphQLModule.forRoot(gqlOptions),
+        RecipesModule
     ]
 })
 export class AppModule {}
