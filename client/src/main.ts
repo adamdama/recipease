@@ -1,12 +1,16 @@
 import Vue from "vue";
 import App from "./App.vue";
 import { router } from "./router";
-import { Auth0Plugin, AuthServiceOnRedirectAppState } from "./auth";
+import {
+    AuthPlugin,
+    AuthServiceOnRedirectAppState,
+    AuthServiceOptions
+} from "./auth";
 import { domain, clientId } from "../auth_config.json";
 
 Vue.config.productionTip = false;
 
-Vue.use(Auth0Plugin, {
+const authPluginOptions: AuthServiceOptions = {
     domain,
     clientId,
     onRedirectCallback: (appState: AuthServiceOnRedirectAppState) => {
@@ -16,7 +20,9 @@ Vue.use(Auth0Plugin, {
                 : window.location.pathname
         );
     }
-});
+};
+
+Vue.use(AuthPlugin, authPluginOptions);
 
 new Vue({
     router,

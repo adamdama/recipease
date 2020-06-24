@@ -6,7 +6,8 @@ import createAuth0Client, {
     GetIdTokenClaimsOptions,
     GetTokenSilentlyOptions,
     GetTokenWithPopupOptions,
-    LogoutOptions
+    LogoutOptions,
+    CacheLocation
 } from "@auth0/auth0-spa-js";
 import { Component, Prop } from "vue-property-decorator";
 
@@ -14,13 +15,15 @@ export interface AuthServiceOnRedirectAppState {
     targetUrl?: string;
 }
 
-export type AuthServiceOptions = {
-    audience: string;
+export interface AuthServiceOptions {
     domain: string;
     clientId: string;
-    redirectUri: string;
-    onRedirectCallback(appState: AuthServiceOnRedirectAppState): void;
-};
+    audience?: string;
+    // Defaults for below are set in service
+    redirectUri?: string;
+    cacheLocation?: CacheLocation;
+    onRedirectCallback?(appState: AuthServiceOnRedirectAppState): void;
+}
 
 export interface User {
     email: string;
@@ -42,28 +45,47 @@ export class AuthService extends Vue {
 
     public error: Error | null = null;
 
-    @Prop({ required: true }) private readonly options!: AuthServiceOptions;
+    @Prop({ required: true })
+    private readonly options!: AuthServiceOptions;
 
-    private auth0ClientInstance?: Auth0Client;
+    private auth0Client!: Auth0Client;
 
-    get auth0Client(): Auth0Client {
-        if (!this.auth0ClientInstance) {
-            throw new Error("Auth0 not connected");
-        }
-        return this.auth0ClientInstance;
+    private onRedirectCallback(appState?: AuthServiceOnRedirectAppState) {
+        window.history.replaceState(
+            {},
+            document.title,
+            appState?.targetUrl || window.location.pathname
+        );
     }
 
-    set auth0Client(client: Auth0Client) {
-        this.auth0ClientInstance = client;
+    private readonly defaultAuth0Options = {
+        audience: "",
+        domain: "",
+        client_id: "",
+        redirect_uri: window.location.origin,
+        cacheLocation: "localstorage" as CacheLocation
+    };
+
+    private get auth0Options() {
+        return {
+            ...this.defaultAuth0Options,
+            ...(this.options.domain && { domain: this.options.domain }),
+            ...(this.options.clientId && { client_id: this.options.clientId }),
+            ...(this.options.audience && { audience: this.options.audience }),
+            ...(this.options.redirectUri && {
+                redirect_uri: this.options.redirectUri
+            }),
+            ...(this.options.cacheLocation && {
+                cacheLocation: this.options.cacheLocation
+            })
+        };
     }
 
     async created() {
-        this.auth0Client = await createAuth0Client({
-            domain: this.options.domain,
-            client_id: this.options.clientId,
-            audience: this.options.audience,
-            redirect_uri: this.options.redirectUri
-        });
+        if (typeof this.options.onRedirectCallback === "function") {
+            this.onRedirectCallback = this.options.onRedirectCallback;
+        }
+        this.auth0Client = await createAuth0Client(this.auth0Options);
 
         try {
             if (
@@ -74,7 +96,7 @@ export class AuthService extends Vue {
                     appState
                 } = await this.auth0Client.handleRedirectCallback();
                 this.error = null;
-                this.options.onRedirectCallback(appState);
+                this.onRedirectCallback(appState);
             }
         } catch (e) {
             this.error = e;

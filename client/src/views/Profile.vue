@@ -17,8 +17,6 @@
         <div class="row">
             <pre><code class="json">{{JSON.stringify($auth.user, null, 2)}}</code></pre>
         </div>
-
-        <h3>{{}}</h3>
     </div>
 </template>
 <script lang="ts">
@@ -28,10 +26,6 @@ import { Component, Vue } from "vue-property-decorator";
 export default class Profile extends Vue {
     get userJson() {
         return JSON.stringify(this.$auth.user, null, 2);
-    }
-
-    get token() {
-        return this.$auth.getTokenSilently();
     }
 }
 </script>
