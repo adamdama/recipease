@@ -1,6 +1,6 @@
 import { join } from "path";
 import { Module } from "@nestjs/common";
-import { GraphQLModule } from "@nestjs/graphql";
+import { GraphQLModule, GqlModuleOptions } from "@nestjs/graphql";
 import {
     DrivineModule,
     DrivineModuleOptions
@@ -11,14 +11,14 @@ import { AuthModule } from "./auth/auth.module";
 
 const devMode = process.env.NODE_ENV === "development";
 const autoSchemaFile = join(process.cwd(), "src/schema.gql");
-const gqlOptions = {
+const gqlOptions: GqlModuleOptions = {
     autoSchemaFile,
     debug: devMode,
     playground: devMode,
     introspection: devMode,
     // Make sure the request object is added to the context so that the
     //  authenticated user can be used
-    context: ({ req }) => ({ req })
+    context: (ctx) => ({ req: ctx.req })
 };
 
 @Module({

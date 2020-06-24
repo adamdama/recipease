@@ -1,3 +1,4 @@
+/* eslint-disable no-console */
 import { NestFactory } from "@nestjs/core";
 import { ValidationPipe } from "@nestjs/common";
 import { config } from "dotenv";

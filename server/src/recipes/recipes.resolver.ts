@@ -45,7 +45,7 @@ export class RecipesResolver {
 
     @Mutation(() => Recipe)
     async updateRecipe(@Args() args: UpdateRecipeArgs) {
-        return this.recipesRepository.mergeOne(
+        return this.recipesRepository.mergeOne<UpdateRecipeArgs>(
             {
                 title: args.title,
                 description: args.description,

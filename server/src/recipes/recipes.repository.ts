@@ -6,6 +6,7 @@ import { plainToClass } from "class-transformer";
 import { generateId } from "@/utils";
 import { Recipe } from "./recipe.model";
 import { AddRecipeArgs } from "./dto/add-recipe.args";
+import { UpdateRecipeArgs } from "./dto/update-recipe.args";
 
 // TODO use ts enum for varName?
 
@@ -22,16 +23,15 @@ export class RecipesRepository {
 
     async find(): Promise<Recipe[]> {
         const varName = "r";
-        const resuklt = await this.persistenceManager.query<Recipe>(
+        const result = await this.persistenceManager.query<Recipe>(
             new QuerySpecification<Recipe>()
                 .withStatement(`MATCH (${varName}:Recipe) RETURN ${varName}`)
                 .map(this.getMapper(varName))
         );
-        console.log(resuklt);
-        return resuklt;
+        return result;
     }
 
-    async findOneById(id: string): Promise<Recipe> {
+    async findOneById(id: string): Promise<Recipe | undefined> {
         const varName = "r";
         return this.persistenceManager.maybeGetOne<Recipe>(
             new QuerySpecification<Recipe>()
@@ -44,8 +44,8 @@ export class RecipesRepository {
         );
     }
 
-    async mergeOne(
-        properties: AddRecipeArgs,
+    async mergeOne<ArgsType extends UpdateRecipeArgs | AddRecipeArgs>(
+        properties: ArgsType,
         id: string = generateId()
     ): Promise<Recipe> {
         const varName = "r";
@@ -58,7 +58,7 @@ export class RecipesRepository {
                 acc.params.push(entry[1]);
                 return acc;
             },
-            { props: [], params: [id] }
+            { props: [] as string[], params: [id] }
         );
         const query =
             `MERGE (r:Recipe { id: $1 })\n` +

@@ -7,10 +7,10 @@ export type RecipeResult = {
 @ObjectType()
 export class Recipe {
     @Field(() => ID)
-    readonly id: string;
+    readonly id: string = "";
 
     @Field()
-    title: string;
+    title: string = "";
 
     @Field({ nullable: true })
     description?: string;
