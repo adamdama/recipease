@@ -23,8 +23,11 @@
   },
   "dependencies": {
     "@auth0/auth0-spa-js": "^1.9.0",
+    "apollo-boost": "^0.4.9",
     "core-js": "^3.6.4",
+    "graphql": "^15.1.0",
     "vue": "^2.6.0",
+    "vue-apollo": "^3.0.3",
     "vue-class-component": "^7.2.3",
     "vue-property-decorator": "^8.4.1",
     "vue-router": "^3.2.0"
