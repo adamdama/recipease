@@ -1,18 +1,14 @@
 {
+  "extends": "../tsconfig.json",
   "compilerOptions": {
+    "baseUrl": ".",
     "target": "es5",
     "module": "es2015",
-    "strict": true,
     "jsx": "preserve",
-    "importHelpers": true,
-    "resolveJsonModule": true,
     "moduleResolution": "node",
-    "experimentalDecorators": true,
+    "importHelpers": true,
     "esModuleInterop": true,
     "allowSyntheticDefaultImports": true,
-    "noImplicitAny": true,
-    "sourceMap": true,
-    "baseUrl": ".",
     "types": ["webpack-env", "jest"],
     "paths": {
       "@/*": ["src/*"]

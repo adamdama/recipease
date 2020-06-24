@@ -24,8 +24,8 @@
   ],
   "scripts": {
     "lint": "yarn -s run-p lint:client lint:server",
-    "lint:client": "cd client && yarn -s lint",
-    "lint:server": "cd server && yarn -s lint",
+    "lint:client": "cd client && NODE_ENV=production yarn -s lint",
+    "lint:server": "cd server && NODE_ENV=production yarn -s lint",
     "test": "yarn -s run-p test:client test:server",
     "test:client": "cd client && yarn -s test",
     "test:server": "cd server && yarn -s test"

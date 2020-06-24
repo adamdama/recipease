@@ -1,5 +1,5 @@
 import { Route, NavigationGuardNext } from "vue-router";
-import { getInstance } from "./wrapper";
+import { getInstance } from "./plugin";
 
 export const authGuard = (
     to: Route,
@@ -9,15 +9,11 @@ export const authGuard = (
     const authService = getInstance();
 
     const checkAuth = () => {
-        console.log("checking auth");
         if (authService.isAuthenticated) {
             next();
             return;
         }
-        const appState = { targetUrl: to.fullPath };
-        console.log("not authed", { appState });
-        console.log(JSON.stringify({ appState }));
-        authService.loginWithRedirect({ appState });
+        authService.loginWithRedirect({ appState: { targetUrl: to.fullPath } });
     };
 
     if (!authService.loading) {
