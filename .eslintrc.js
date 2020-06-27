@@ -26,7 +26,7 @@ module.exports = {
         "import/prefer-default-export": "off",
         "class-methods-use-this": "off",
         "brace-style": "error",
-        curly: "error",
+        curly: ["error", "all"],
         "no-console": process.env.NODE_ENV === "production" ? "error" : "warn",
         "no-debugger": process.env.NODE_ENV === "production" ? "error" : "warn"
     },
