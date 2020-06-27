@@ -24,8 +24,11 @@
   "dependencies": {
     "@auth0/auth0-spa-js": "^1.9.0",
     "apollo-boost": "^0.4.9",
+    "apollo-client": "^2.0.0",
+    "apollo-link": "^1.0.0",
     "core-js": "^3.6.4",
-    "graphql": "^15.1.0",
+    "graphql": "^15.0.0",
+    "graphql-tag": "^2.10.1",
     "vue": "^2.6.0",
     "vue-apollo": "^3.0.3",
     "vue-class-component": "^7.2.3",
@@ -46,6 +49,7 @@
     "eslint-plugin-vue": "^6.2.2",
     "sass": "^1.26.3",
     "sass-loader": "^8.0.2",
-    "vue-template-compiler": "^2.6.11"
+    "vue-template-compiler": "^2.6.11",
+    "webpack": "^4.0.0"
   }
 }

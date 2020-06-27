@@ -24,6 +24,8 @@ import { Component, Vue } from "vue-property-decorator";
 
 @Component
 export default class Profile extends Vue {
+    readonly name = "Profile";
+
     get userJson() {
         return JSON.stringify(this.$auth.user, null, 2);
     }

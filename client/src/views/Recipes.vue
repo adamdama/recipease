@@ -1,12 +1,19 @@
 <template>
     <div class="recipes">
         <h1>Recipes</h1>
-        <span>List of recipes</span>
+
+        <recipes-list />
     </div>
 </template>
 
 <script lang="ts">
-export default {
-    name: "Recipes"
-};
+import { Component, Vue } from "vue-property-decorator";
+import RecipesList from "@/components/RecipeList.vue";
+
+@Component({
+    components: { RecipesList }
+})
+export default class Recipes extends Vue {
+    readonly name = "Recipes";
+}
 </script>

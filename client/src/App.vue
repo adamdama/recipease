@@ -7,7 +7,7 @@
 
 <script lang="ts">
 import { Component, Vue } from "vue-property-decorator";
-import Navigation from "./components/Navigation.vue";
+import Navigation from "@/components/Navigation.vue";
 
 @Component({
     name: "App",
@@ -16,7 +16,7 @@ import Navigation from "./components/Navigation.vue";
     }
 })
 export default class App extends Vue {
-    readonly name: string = "Recipease";
+    readonly name = "App";
 }
 </script>
 

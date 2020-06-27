@@ -12,7 +12,10 @@
 </template>
 
 <script lang="ts">
-export default {
-    name: "Home"
-};
+import { Component, Vue } from "vue-property-decorator";
+
+@Component
+export default class Home extends Vue {
+    readonly name = "Home";
+}
 </script>
