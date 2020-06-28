@@ -28,6 +28,6 @@ Vue.use(AuthPlugin, authPluginOptions);
 
 new Vue({
     router,
-    apolloProvider: createApolloProvider({ uri: "https://localhost:3000" }),
+    apolloProvider: createApolloProvider(),
     render: (h) => h(App)
 }).$mount("#app");

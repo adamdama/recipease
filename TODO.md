@@ -13,3 +13,4 @@
 6. User auth
 7. JSDoc everything in BE
 8. ESLint ts in .vue
+9. FE and BE loggers

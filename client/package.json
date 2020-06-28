@@ -27,7 +27,7 @@
     "apollo-client": "^2.0.0",
     "apollo-link": "^1.0.0",
     "core-js": "^3.6.4",
-    "graphql": "^15.0.0",
+    "graphql": "^14.0.0",
     "graphql-tag": "^2.10.1",
     "vue": "^2.6.0",
     "vue-apollo": "^3.0.3",

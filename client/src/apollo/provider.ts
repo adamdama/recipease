@@ -2,15 +2,19 @@ import Vue from "vue";
 import ApolloClient, { PresetConfig } from "apollo-boost";
 import VueApollo from "vue-apollo";
 
-/** Apollo */
+// Install VueApollo plugin
 Vue.use(VueApollo);
 
 export type ApolloProviderOptions = PresetConfig;
 
-export function createApolloProvider(options: ApolloProviderOptions) {
+const defaultOptions: ApolloProviderOptions = {
+    uri: process.env.GRAPHQL_SERVER || "http://localhost:3000"
+};
+
+export function createApolloProvider(options?: ApolloProviderOptions) {
     // Create vue apollo provider
     const apolloProvider = new VueApollo({
-        defaultClient: new ApolloClient(options),
+        defaultClient: new ApolloClient({ ...defaultOptions, ...options }),
         defaultOptions: {
             $query: {
                 // fetchPolicy: 'cache-and-network',

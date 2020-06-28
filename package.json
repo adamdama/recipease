@@ -40,7 +40,7 @@
     "server/src/**/*.{js,ts}": [
       "yarn lint:server"
     ],
-    "*.{json,yaml,yml,gql,scss,md,html}": [
+    "*.{json,yaml,yml,gql,scss,md,html,config.js}": [
       "prettier --write"
     ]
   },
@@ -51,7 +51,7 @@
     "eslint": "^6.7.2",
     "eslint-config-airbnb-typescript": "^7.2.1",
     "eslint-config-prettier": "^6.11.0",
-    "eslint-plugin-import": "^2.20.1",
+    "eslint-plugin-import": "^2.22.0",
     "eslint-plugin-jest": "^23.13.2",
     "eslint-plugin-prettier": "^3.1.1",
     "lint-staged": "^10.0.3",
