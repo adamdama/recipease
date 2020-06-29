@@ -2,6 +2,10 @@
   "name": "recipease",
   "version": "0.0.0",
   "description": "App for managing recipes",
+  "repository": {
+    "url": "https://github.com/adamdama/recipease.git",
+    "type": "git"
+  },
   "author": {
     "name": "Adam Cox",
     "email": "adamdama@hotmail.com"
