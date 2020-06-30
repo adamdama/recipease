@@ -18,3 +18,4 @@
 ## Consider
 
 1. Add Lerna when there is shared code
+2. Web Sockets and Subscriptions

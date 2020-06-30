@@ -22,7 +22,8 @@ export const routes: RouteConfig[] = [
     {
         path: "/recipes",
         name: "Recipes",
-        component: Recipes
+        component: Recipes,
+        beforeEnter: authGuard
     }
     // {
     //     path: "/about",

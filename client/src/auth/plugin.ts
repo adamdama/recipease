@@ -3,7 +3,7 @@ import { AuthService, AuthServiceOptions } from "./service";
 
 let instance: AuthService;
 
-export const getInstance = () => instance;
+export const getInstance = (): AuthService => instance;
 
 const useAuth0 = (options: AuthServiceOptions) => {
     if (instance) {
