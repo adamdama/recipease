@@ -14,6 +14,10 @@
 7. ESLint ts in .vue
 8. FE and BE loggers
 9. Update readmes
+10. Local dev with https
+11. Setup core as another package/workspace
+12. CSRF protection
+13. Refresh auth token / logout
 
 ## Consider
 

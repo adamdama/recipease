@@ -1,4 +1,5 @@
 const path = require("path");
+require("./env.config");
 
 module.exports = {
     devServer: {
@@ -13,7 +14,7 @@ module.exports = {
             }
         }
     },
-    chainWebpack: (config) => {
+    chainWebpack: config => {
         // Support for GQL files
         const cacheDirectory = path.resolve("node_modules/.cache/cache-loader");
         const gqlRule = config.module.rule("gql").test(/\.(gql|graphql)$/);
@@ -23,13 +24,16 @@ module.exports = {
             .options({ cacheDirectory })
             .end();
 
-        gqlRule.use("gql-loader").loader("graphql-tag/loader").end();
+        gqlRule
+            .use("gql-loader")
+            .loader("graphql-tag/loader")
+            .end();
 
         config.module
             .rule("eslint")
             .use("eslint-loader")
             .loader("eslint-loader")
-            .tap((options) => {
+            .tap(options => {
                 options.extensions = [
                     ...options.extensions,
                     ".gql",

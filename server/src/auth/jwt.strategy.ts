@@ -18,10 +18,11 @@ export class JwtStrategy extends PassportStrategy(Strategy) {
                 cache: true,
                 rateLimit: true,
                 jwksRequestsPerMinute: 5,
+                // ! auth0Domain requires a trailing slash !
                 jwksUri: `${auth0Domain}.well-known/jwks.json`
             }),
-
             jwtFromRequest: ExtractJwt.fromAuthHeaderAsBearerToken(),
+            ignoreExpiration: process.env.NODE_ENV === "development",
             audience: auth0Audience,
             issuer: auth0Domain,
             algorithms: ["RS256"]

@@ -4,7 +4,7 @@ import { Recipe } from "./recipe.model";
 import { RecipesRepository } from "./recipes.repository";
 import { AddRecipeArgs } from "./dto/add-recipe.args";
 import { UpdateRecipeArgs } from "./dto/update-recipe.args";
-import { GraphQLAuthGuard } from "../common/guards/graphql.auth.guard";
+import { GraphQLAuthGuard } from "../auth/graphql-auth.guard";
 
 // TODO change NotFound error - not appropriate for GQL
 
@@ -19,8 +19,8 @@ export class RecipesResolver {
     // }
 
     // TODO paginate this
-    @Query(() => [Recipe], { name: "recipes" })
     @UseGuards(GraphQLAuthGuard)
+    @Query(() => [Recipe], { name: "recipes" })
     async getRecipes() {
         const recipes = await this.recipesRepository.find();
         if (!recipes) {

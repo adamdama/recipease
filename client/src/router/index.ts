@@ -1,9 +1,9 @@
 import Vue from "vue";
 import VueRouter, { RouteConfig } from "vue-router";
-import Home from "../views/Home.vue";
-import Profile from "../views/Profile.vue";
-import Recipes from "../views/Recipes.vue";
-import { authGuard } from "../auth";
+import Profile from "@/views/Profile.vue";
+import Home from "@/views/Home.vue";
+import Recipes from "@/views/Recipes.vue";
+import { authGuard } from "@/auth";
 
 Vue.use(VueRouter);
 
@@ -32,7 +32,7 @@ export const routes: RouteConfig[] = [
     //     // this generates a separate chunk (about.[hash].js) for this route
     //     // which is lazy-loaded when the route is visited.
     //     component: () =>
-    //         import(/* webpackChunkName: "about" */ "../views/About.vue")
+    //         import(/* webpackChunkName: "about" */ "@/views/About.vue")
     // }
 ];
 
