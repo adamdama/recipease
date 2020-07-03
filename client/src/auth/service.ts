@@ -7,7 +7,8 @@ import createAuth0Client, {
     GetTokenSilentlyOptions,
     GetTokenWithPopupOptions,
     LogoutOptions,
-    CacheLocation
+    CacheLocation,
+    Auth0ClientOptions
 } from "@auth0/auth0-spa-js";
 import { Component, Prop } from "vue-property-decorator";
 
@@ -58,15 +59,16 @@ export class AuthService extends Vue {
         );
     }
 
-    private readonly defaultAuth0Options = {
+    private readonly defaultAuth0Options: Auth0ClientOptions = {
         audience: "",
         domain: "",
         client_id: "",
         redirect_uri: window.location.origin,
-        cacheLocation: "localstorage" as CacheLocation
+        cacheLocation: "localstorage" as CacheLocation,
+        useRefreshTokens: true
     };
 
-    private get auth0Options() {
+    private get auth0Options(): Auth0ClientOptions {
         return {
             ...this.defaultAuth0Options,
             ...(this.options.domain && { domain: this.options.domain }),
