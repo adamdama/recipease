@@ -38,7 +38,7 @@ export interface User {
 export class AuthService extends Vue {
     public loading = true;
 
-    public isAuthenticated = true;
+    public isAuthenticated = false;
 
     public popupOpen = false;
 
