@@ -6,9 +6,9 @@ import { Field, ArgsType } from "@nestjs/graphql";
 export class UpdateRecipeArgs {
     @Field()
     @MinLength(3)
-    id: string;
+    id?: string;
 
-    @Field()
+    @Field({ nullable: true })
     @MinLength(3)
     title?: string;
 

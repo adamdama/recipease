@@ -6,7 +6,7 @@ type Mutation {
     addRecipe(title: String!, description: String, method: [String!]): Recipe!
     updateRecipe(
         id: String!
-        title: String!
+        title: String
         description: String
         method: [String!]
     ): Recipe!

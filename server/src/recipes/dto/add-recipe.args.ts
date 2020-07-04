@@ -6,7 +6,7 @@ import { Field, ArgsType } from "@nestjs/graphql";
 export class AddRecipeArgs {
     @Field()
     @MinLength(3)
-    title: string;
+    title!: string;
 
     @Field({ nullable: true })
     // @MinLength(15, { always: false })

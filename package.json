@@ -2,6 +2,10 @@
   "name": "recipease",
   "version": "0.0.0",
   "description": "App for managing recipes",
+  "repository": {
+    "url": "https://github.com/adamdama/recipease.git",
+    "type": "git"
+  },
   "author": {
     "name": "Adam Cox",
     "email": "adamdama@hotmail.com"
@@ -24,8 +28,8 @@
   ],
   "scripts": {
     "lint": "yarn -s run-p lint:client lint:server",
-    "lint:client": "cd client && yarn -s lint",
-    "lint:server": "cd server && yarn -s lint",
+    "lint:client": "cd client && NODE_ENV=production yarn -s lint",
+    "lint:server": "cd server && NODE_ENV=production yarn -s lint",
     "test": "yarn -s run-p test:client test:server",
     "test:client": "cd client && yarn -s test",
     "test:server": "cd server && yarn -s test"
@@ -40,7 +44,7 @@
     "server/src/**/*.{js,ts}": [
       "yarn lint:server"
     ],
-    "*.{json,yaml,yml,gql,scss,md,html}": [
+    "*.{json,yaml,yml,gql,scss,md,html,config.js}": [
       "prettier --write"
     ]
   },
@@ -51,7 +55,7 @@
     "eslint": "^6.7.2",
     "eslint-config-airbnb-typescript": "^7.2.1",
     "eslint-config-prettier": "^6.11.0",
-    "eslint-plugin-import": "^2.20.1",
+    "eslint-plugin-import": "^2.22.0",
     "eslint-plugin-jest": "^23.13.2",
     "eslint-plugin-prettier": "^3.1.1",
     "lint-staged": "^10.0.3",

@@ -1,0 +1,7 @@
+#import "@/apollo/graphql/fragments/recipe.gql"
+
+query getRecipes {
+    recipes {
+        ...Recipe
+    }
+}
