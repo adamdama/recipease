@@ -1,18 +1,12 @@
-import { Field, ID, ObjectType } from "@nestjs/graphql";
-import { Flavour } from "@/types/flavour";
+import { InputType, Field } from "@nestjs/graphql";
+import { MinLength } from "class-validator";
+import { UpdateRecipeProperties } from "../recipes.repository";
 
-export type RecipeId = Flavour<string, "Recipe">;
-
-@ObjectType()
-export class Recipe {
-    @Field(() => ID)
-    readonly id!: RecipeId;
-
-    @Field()
-    title!: string;
-
-    @Field()
-    created!: string;
+@InputType()
+export class UpdateRecipeInput implements UpdateRecipeProperties {
+    @Field({ nullable: true })
+    @MinLength(3)
+    title?: string;
 
     @Field({ nullable: true })
     description?: string;

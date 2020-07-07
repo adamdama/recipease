@@ -1,57 +1,63 @@
 import { Resolver, Args, Query, ID, Mutation } from "@nestjs/graphql";
 import { NotFoundException, UseGuards } from "@nestjs/common";
-import { Recipe } from "./recipe.model";
+import { CurrentUser } from "@/auth/current-user.decorator";
+import { GraphQLAuthGuard } from "@/auth/graphql-auth.guard";
+import { User } from "@/auth/user.model";
+import { Recipe, RecipeId } from "./recipe.model";
 import { RecipesRepository } from "./recipes.repository";
 import { AddRecipeArgs } from "./dto/add-recipe.args";
 import { UpdateRecipeArgs } from "./dto/update-recipe.args";
-import { GraphQLAuthGuard } from "../auth/graphql-auth.guard";
-
+// import { UpdateRecipeArgs } from "./dto/update-recipe.args";
 // TODO change NotFound error - not appropriate for GQL
 
+@UseGuards(GraphQLAuthGuard)
 @Resolver(() => Recipe)
 export class RecipesResolver {
     constructor(private readonly recipesRepository: RecipesRepository) {}
 
-    // @Query()
-    // @UseGuards(GraphQLAuthGuard)
-    // whoAmI(@CurrentUser() user: User) {
-    //     return this.usersService.findById(user.id);
-    // }
-
     // TODO paginate this
-    @UseGuards(GraphQLAuthGuard)
-    @Query(() => [Recipe], { name: "recipes" })
-    async getRecipes() {
-        const recipes = await this.recipesRepository.find();
-        if (!recipes) {
-            throw new NotFoundException();
-        }
-        return recipes;
+    @Query(() => [Recipe], { name: "recipes", nullable: "items" })
+    async getRecipes(@CurrentUser() user: User) {
+        return this.recipesRepository.find({ userId: user.id });
     }
 
     @Query(() => Recipe, { name: "recipe" })
-    async getRecipe(@Args("id", { type: () => ID }) id: string) {
-        const recipe = await this.recipesRepository.findOneById(id);
+    async getRecipe(
+        @Args("id", { type: () => ID }) id: RecipeId,
+        @CurrentUser() user: User
+    ) {
+        const recipe = await this.recipesRepository.findOneById({
+            id,
+            userId: user.id
+        });
         if (!recipe) {
-            throw new NotFoundException(id);
+            throw new NotFoundException(`Cannot find recipe with id (${id})`);
         }
         return recipe;
     }
 
     @Mutation(() => Recipe)
-    async addRecipe(@Args() args: AddRecipeArgs) {
-        return this.recipesRepository.mergeOne(args);
+    async addRecipe(@Args() args: AddRecipeArgs, @CurrentUser() user: User) {
+        return this.recipesRepository.createOne(args.recipe, user.id);
     }
 
     @Mutation(() => Recipe)
-    async updateRecipe(@Args() args: UpdateRecipeArgs) {
-        return this.recipesRepository.mergeOne<UpdateRecipeArgs>(
-            {
-                title: args.title,
-                description: args.description,
-                method: args.method
-            },
-            args.id
+    async updateRecipe(
+        @Args() args: UpdateRecipeArgs,
+        @CurrentUser() user: User
+    ) {
+        const recipe = await this.recipesRepository.updateOne(
+            args.id,
+            args.recipe,
+            user.id
         );
+
+        if (!recipe) {
+            throw new NotFoundException(
+                `Cannot find recipe with id (${args.id})`
+            );
+        }
+
+        return recipe;
     }
 }

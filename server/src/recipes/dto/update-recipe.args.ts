@@ -1,21 +1,12 @@
-import { MinLength } from "class-validator";
 import { Field, ArgsType } from "@nestjs/graphql";
+import { UpdateRecipeInput } from "./update-recipe.input";
+import { RecipeId } from "../recipe.model";
 
-// TODO convert to input
 @ArgsType()
 export class UpdateRecipeArgs {
     @Field()
-    @MinLength(3)
-    id?: string;
+    id!: RecipeId;
 
-    @Field({ nullable: true })
-    @MinLength(3)
-    title?: string;
-
-    @Field({ nullable: true })
-    // @MinLength(15, { always: false })
-    description?: string;
-
-    @Field(() => [String], { nullable: true })
-    method?: string[];
+    @Field()
+    recipe!: UpdateRecipeInput;
 }
