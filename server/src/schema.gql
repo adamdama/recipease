@@ -3,6 +3,7 @@
 # ------------------------------------------------------
 
 input AddRecipeInput {
+    id: String!
     title: String!
     description: String
     method: [String!]
@@ -13,7 +14,7 @@ input AddRecipeInput {
 
 type Mutation {
     addRecipe(recipe: AddRecipeInput!): Recipe!
-    updateRecipe(id: String!, recipe: UpdateRecipeInput!): Recipe!
+    updateRecipe(recipe: UpdateRecipeInput!): Recipe!
 }
 
 type Query {
@@ -33,6 +34,7 @@ type Recipe {
 }
 
 input UpdateRecipeInput {
+    id: String!
     title: String
     description: String
     method: [String!]

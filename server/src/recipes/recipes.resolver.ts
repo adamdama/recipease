@@ -10,6 +10,8 @@ import { UpdateRecipeArgs } from "./dto/update-recipe.args";
 // import { UpdateRecipeArgs } from "./dto/update-recipe.args";
 // TODO change NotFound error - not appropriate for GQL
 
+// TODO create response type objects
+
 @UseGuards(GraphQLAuthGuard)
 @Resolver(() => Recipe)
 export class RecipesResolver {
@@ -47,14 +49,14 @@ export class RecipesResolver {
         @CurrentUser() user: User
     ) {
         const recipe = await this.recipesRepository.updateOne(
-            args.id,
+            args.recipe.id,
             args.recipe,
             user.id
         );
 
         if (!recipe) {
             throw new NotFoundException(
-                `Cannot find recipe with id (${args.id})`
+                `Cannot find recipe with id (${args.recipe.id})`
             );
         }
 

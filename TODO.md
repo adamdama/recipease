@@ -22,6 +22,7 @@
 15. GQL Input validation decorators
 16. Hide query parameters from errors when not in dev mode
 17. GraphQL Scalars and directives e.g Date scalar and directive to convert unix timestamp
+18. Stop sensitive informaiton being leaked out in errors on prod
 
 ## Consider
 

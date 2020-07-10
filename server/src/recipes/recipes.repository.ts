@@ -2,25 +2,31 @@ import { Injectable } from "@nestjs/common";
 import { QuerySpecification } from "@liberation-data/drivine/query/QuerySpecification";
 import { InjectPersistenceManager } from "@liberation-data/drivine/DrivineInjectionDecorators";
 import { PersistenceManager } from "@liberation-data/drivine/manager/PersistenceManager";
-import { plainToClass } from "class-transformer";
 import { generateId } from "@/utils";
-import { UserId, USER_LABEL } from "@/auth/user.model";
+import { UserId, USER_LABEL as USER_NODE_LABEL } from "@/auth/user.model";
+import { Query, node, relation } from "cypher-query-builder";
 import { Recipe, RecipeId } from "./recipe.model";
 
-// TODO use ts enum for varName? Or generics?
-const recipeResultKey = "r";
-
-interface FindArgs {
+export interface FindArgs {
     userId?: UserId;
 }
-interface FindOneByIdArgs {
+
+export interface FindOneByIdArgs {
     id: RecipeId;
     userId?: UserId;
 }
 
-export const RECIPE_LABEL = "Recipe";
+interface FindMatchArgs {
+    id?: RecipeId;
+    userId?: UserId;
+}
 
-export interface UpdateRecipeProperties {
+export const RECIPE_NODE_LABEL = "Recipe";
+export const CREATED_RELATIONSHIP_LABEL = "CREATED";
+
+export type UpdateRecipeProperties = {
+    id?: string;
+
     title?: string;
 
     description?: string;
@@ -32,14 +38,18 @@ export interface UpdateRecipeProperties {
     serves?: Number;
 
     takesTime?: Number;
-}
+};
 
 export interface CreateRecipeProperties extends UpdateRecipeProperties {
     title: string;
 }
 
-// TODO make a cypher query builder
-// TODO: refactor this recipeResultKey mess into something sensible
+const prefixObjectKeys = (obj: Record<string, any>, prefix: string) =>
+    Object.fromEntries(
+        Object.entries(obj).map(([key, value]) => [`${prefix}${key}`, value])
+    );
+
+// TODO: Pagination and limits
 
 @Injectable()
 export class RecipesRepository {
@@ -48,33 +58,45 @@ export class RecipesRepository {
         readonly persistenceManager: PersistenceManager
     ) {}
 
-    private resultMap(item: { [recipeResultKey]: Recipe }) {
-        return plainToClass(Recipe, item[recipeResultKey]);
+    private getFindMatch(args?: FindMatchArgs) {
+        const recipeProps = args?.id ? { id: args.id } : undefined;
+        const match = [node("r", RECIPE_NODE_LABEL, recipeProps)];
+        if (args?.userId) {
+            match.push(
+                relation("in", "", CREATED_RELATIONSHIP_LABEL),
+                node("u", USER_NODE_LABEL, { id: args.userId })
+            );
+        }
+
+        return match;
     }
 
     async find(args?: FindArgs): Promise<Recipe[]> {
-        const filter = args?.userId ? "{ userId: $1 }" : "";
+        const { query, params } = new Query()
+            .match(this.getFindMatch(args))
+            .return("r")
+            .buildQueryObject();
+
         const result = await this.persistenceManager.query<Recipe>(
             new QuerySpecification<Recipe>()
-                .withStatement(
-                    `MATCH (${recipeResultKey}:${RECIPE_LABEL} ${filter}) RETURN ${recipeResultKey}`
-                )
-                .bind([args?.userId])
-                .map(this.resultMap)
+                .withStatement(query)
+                .bind(params)
+                .transform(Recipe)
         );
         return result;
     }
 
     async findOneById(args: FindOneByIdArgs): Promise<Recipe | undefined> {
-        const filter = `{ id: $1 ${args.userId ? "userId: $2" : ""} }`;
+        const { query, params } = new Query()
+            .match(this.getFindMatch(args))
+            .return("r")
+            .buildQueryObject();
+
         return this.persistenceManager.maybeGetOne<Recipe>(
             new QuerySpecification<Recipe>()
-                .withStatement(
-                    `MATCH (${recipeResultKey}:${RECIPE_LABEL} ${filter}) RETURN ${recipeResultKey}`
-                )
-                .bind([args.id, args.userId])
-                .limit(1)
-                .map(this.resultMap)
+                .withStatement(query)
+                .bind({ ...params })
+                .transform(Recipe)
         );
     }
 
@@ -83,17 +105,23 @@ export class RecipesRepository {
         userId: UserId
     ): Promise<Recipe> {
         const id = generateId();
-        const query =
-            `MERGE (u:${USER_LABEL} { id: $1 })\n` +
-            `ON CREATE SET u.createdAt = timestamp()\n` +
-            `CREATE (${recipeResultKey}:${RECIPE_LABEL} $2)<-[:CREATED]-(u)\n` +
-            `RETURN ${recipeResultKey}`;
+
+        const { query, params } = new Query()
+            .merge([node("u", USER_NODE_LABEL, { id: userId })])
+            .onCreate.setVariables({ "u.createdAt": "timestamp()" })
+            .create([
+                node("r", RECIPE_NODE_LABEL, { id, ...properties }),
+                relation("in", "", CREATED_RELATIONSHIP_LABEL),
+                node("u")
+            ])
+            .return("r")
+            .buildQueryObject();
 
         const [result] = await this.persistenceManager.query<Recipe>(
             new QuerySpecification<Recipe>()
                 .withStatement(query)
-                .bind([userId, { ...properties, id }])
-                .map(this.resultMap)
+                .bind(params)
+                .transform(Recipe)
         );
         return result;
     }
@@ -103,33 +131,32 @@ export class RecipesRepository {
         properties: UpdateRecipeProperties,
         userId: UserId
     ): Promise<Recipe> {
-        // MATCH + SET
-        // TODO: implement a saner way of achieving this
-        const { props, params } = Object.entries(properties).reduce(
-            (acc, entry) => {
-                if (entry[1] == null) {
-                    return acc;
-                }
-                acc.props.push(`r.${entry[0]} = $${acc.params.length + 1}`);
-                acc.params.push(entry[1]);
-                return acc;
-            },
-            { props: [] as string[], params: [userId, id] }
-        );
+        // Ensure the id cannot be changed
+        const safeProperties = { ...properties };
+        delete safeProperties.id;
+        // If title is null it will get removed and we cannot have a recipe wihtout a title
+        if (safeProperties.title === null) {
+            delete safeProperties.title;
+        }
 
-        const set = props.length
-            ? `SET r.modifiedAt = timestamp(), ${props.join(", ")}\n`
-            : "";
+        const q = new Query().match([
+            node("r", RECIPE_NODE_LABEL, { id }),
+            relation("in", "", CREATED_RELATIONSHIP_LABEL),
+            node("u", USER_NODE_LABEL, { id: userId })
+        ]);
+        if (Object.keys(safeProperties).length) {
+            q.setVariables({ "r.modifiedAt": "timestamp()" });
+            q.setValues(prefixObjectKeys(safeProperties, "r."));
+        }
+        q.return("r");
 
-        const query =
-            `MATCH (u:${USER_LABEL} { id: $1 })-[:CREATED]->(r:Recipe { id: $2 })\n${set}` +
-            `RETURN ${recipeResultKey}`;
+        const { query, params } = q.buildQueryObject();
 
         const [result] = await this.persistenceManager.query<Recipe>(
             new QuerySpecification<Recipe>()
                 .withStatement(query)
                 .bind(params)
-                .map(this.resultMap)
+                .transform(Recipe)
         );
         return result;
     }
