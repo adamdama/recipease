@@ -2,13 +2,54 @@ import { Injectable } from "@nestjs/common";
 import { QuerySpecification } from "@liberation-data/drivine/query/QuerySpecification";
 import { InjectPersistenceManager } from "@liberation-data/drivine/DrivineInjectionDecorators";
 import { PersistenceManager } from "@liberation-data/drivine/manager/PersistenceManager";
-import { plainToClass } from "class-transformer";
 import { generateId } from "@/utils";
-import { Recipe } from "./recipe.model";
-import { AddRecipeArgs } from "./dto/add-recipe.args";
-import { UpdateRecipeArgs } from "./dto/update-recipe.args";
+import { UserId, USER_LABEL as USER_NODE_LABEL } from "@/auth/user.model";
+import { Query, node, relation } from "cypher-query-builder";
+import { Recipe, RecipeId } from "./recipe.model";
 
-// TODO use ts enum for varName?
+export interface FindArgs {
+    userId?: UserId;
+}
+
+export interface FindOneByIdArgs {
+    id: RecipeId;
+    userId?: UserId;
+}
+
+interface FindMatchArgs {
+    id?: RecipeId;
+    userId?: UserId;
+}
+
+export const RECIPE_NODE_LABEL = "Recipe";
+export const CREATED_RELATIONSHIP_LABEL = "CREATED";
+
+export type UpdateRecipeProperties = {
+    id?: string;
+
+    title?: string;
+
+    description?: string;
+
+    method?: [string];
+
+    ingredients?: [string];
+
+    serves?: Number;
+
+    takesTime?: Number;
+};
+
+export interface CreateRecipeProperties extends UpdateRecipeProperties {
+    title: string;
+}
+
+const prefixObjectKeys = (obj: Record<string, any>, prefix: string) =>
+    Object.fromEntries(
+        Object.entries(obj).map(([key, value]) => [`${prefix}${key}`, value])
+    );
+
+// TODO: Pagination and limits
 
 @Injectable()
 export class RecipesRepository {
@@ -17,61 +58,106 @@ export class RecipesRepository {
         readonly persistenceManager: PersistenceManager
     ) {}
 
-    getMapper(varName: string) {
-        return (item: any) => plainToClass(Recipe, item[varName]);
+    private getFindMatch(args?: FindMatchArgs) {
+        const recipeProps = args?.id ? { id: args.id } : undefined;
+        const match = [node("r", RECIPE_NODE_LABEL, recipeProps)];
+        if (args?.userId) {
+            match.push(
+                relation("in", "", CREATED_RELATIONSHIP_LABEL),
+                node("u", USER_NODE_LABEL, { id: args.userId })
+            );
+        }
+
+        return match;
     }
 
-    async find(): Promise<Recipe[]> {
-        const varName = "r";
+    async find(args?: FindArgs): Promise<Recipe[]> {
+        const { query, params } = new Query()
+            .match(this.getFindMatch(args))
+            .return("r")
+            .buildQueryObject();
+
         const result = await this.persistenceManager.query<Recipe>(
             new QuerySpecification<Recipe>()
-                .withStatement(`MATCH (${varName}:Recipe) RETURN ${varName}`)
-                .map(this.getMapper(varName))
+                .withStatement(query)
+                .bind(params)
+                .transform(Recipe)
         );
         return result;
     }
 
-    async findOneById(id: string): Promise<Recipe | undefined> {
-        const varName = "r";
+    async findOneById(args: FindOneByIdArgs): Promise<Recipe | undefined> {
+        const { query, params } = new Query()
+            .match(this.getFindMatch(args))
+            .return("r")
+            .buildQueryObject();
+
         return this.persistenceManager.maybeGetOne<Recipe>(
             new QuerySpecification<Recipe>()
-                .withStatement(
-                    `MATCH (${varName}:Recipe {id: $1}) RETURN ${varName}`
-                )
-                .bind([id])
-                .limit(1)
-                .map(this.getMapper(varName))
+                .withStatement(query)
+                .bind({ ...params })
+                .transform(Recipe)
         );
     }
 
-    async mergeOne<ArgsType extends UpdateRecipeArgs | AddRecipeArgs>(
-        properties: ArgsType,
-        id: string = generateId()
+    async createOne(
+        properties: CreateRecipeProperties,
+        userId: UserId
     ): Promise<Recipe> {
-        const varName = "r";
-        const { props, params } = Object.entries(properties).reduce(
-            (acc, entry) => {
-                if (entry[1] == null) {
-                    return acc;
-                }
-                acc.props.push(`r.${entry[0]} = $${acc.params.length + 1}`);
-                acc.params.push(entry[1]);
-                return acc;
-            },
-            { props: [] as string[], params: [id] }
-        );
-        const query =
-            `MERGE (r:Recipe { id: $1 })\n` +
-            `ON CREATE SET ${props}, ${varName}.created = timestamp()\n` +
-            `ON MATCH SET ${props}, ${varName}.modified = timestamp()\n` +
-            `RETURN ${varName}`;
+        const id = generateId();
 
-        const [recipe] = await this.persistenceManager.query<Recipe>(
+        const { query, params } = new Query()
+            .merge([node("u", USER_NODE_LABEL, { id: userId })])
+            .onCreate.setVariables({ "u.createdAt": "timestamp()" })
+            .create([
+                node("r", RECIPE_NODE_LABEL, { id, ...properties }),
+                relation("in", "", CREATED_RELATIONSHIP_LABEL),
+                node("u")
+            ])
+            .return("r")
+            .buildQueryObject();
+
+        const [result] = await this.persistenceManager.query<Recipe>(
             new QuerySpecification<Recipe>()
                 .withStatement(query)
                 .bind(params)
-                .map(this.getMapper(varName))
+                .transform(Recipe)
         );
-        return recipe;
+        return result;
+    }
+
+    async updateOne(
+        id: RecipeId,
+        properties: UpdateRecipeProperties,
+        userId: UserId
+    ): Promise<Recipe> {
+        // Ensure the id cannot be changed
+        const safeProperties = { ...properties };
+        delete safeProperties.id;
+        // If title is null it will get removed and we cannot have a recipe wihtout a title
+        if (safeProperties.title === null) {
+            delete safeProperties.title;
+        }
+
+        const q = new Query().match([
+            node("r", RECIPE_NODE_LABEL, { id }),
+            relation("in", "", CREATED_RELATIONSHIP_LABEL),
+            node("u", USER_NODE_LABEL, { id: userId })
+        ]);
+        if (Object.keys(safeProperties).length) {
+            q.setVariables({ "r.modifiedAt": "timestamp()" });
+            q.setValues(prefixObjectKeys(safeProperties, "r."));
+        }
+        q.return("r");
+
+        const { query, params } = q.buildQueryObject();
+
+        const [result] = await this.persistenceManager.query<Recipe>(
+            new QuerySpecification<Recipe>()
+                .withStatement(query)
+                .bind(params)
+                .transform(Recipe)
+        );
+        return result;
     }
 }

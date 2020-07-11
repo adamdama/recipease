@@ -2,24 +2,43 @@
 # THIS FILE WAS AUTOMATICALLY GENERATED (DO NOT MODIFY)
 # ------------------------------------------------------
 
+input AddRecipeInput {
+    id: String!
+    title: String!
+    description: String
+    method: [String!]
+    ingredients: [String!]
+    serves: Float
+    takesTime: Float
+}
+
 type Mutation {
-    addRecipe(title: String!, description: String, method: [String!]): Recipe!
-    updateRecipe(
-        id: String!
-        title: String
-        description: String
-        method: [String!]
-    ): Recipe!
+    addRecipe(recipe: AddRecipeInput!): Recipe!
+    updateRecipe(recipe: UpdateRecipeInput!): Recipe!
 }
 
 type Query {
-    recipes: [Recipe!]!
+    recipes: [Recipe]!
     recipe(id: ID!): Recipe!
 }
 
 type Recipe {
     id: ID!
     title: String!
+    created: String!
     description: String
     method: [String!]
+    ingredients: [String!]
+    serves: Float
+    takesTime: Float
+}
+
+input UpdateRecipeInput {
+    id: String!
+    title: String
+    description: String
+    method: [String!]
+    ingredients: [String!]
+    serves: Float
+    takesTime: Float
 }

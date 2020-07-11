@@ -7,6 +7,8 @@
             :to="route.path"
             >{{ route.name }}</router-link
         >
+        <a v-if="isLoggedIn" class="logout" @click="logout()">Logout</a>
+        <a v-else class="login" @click="login()">Login</a>
     </div>
 </template>
 
@@ -21,5 +23,25 @@ export default class Navigation extends Vue {
     @Prop() private title!: string;
 
     private routes = routes;
+
+    get isLoggedIn() {
+        return this.$auth.isAuthenticated;
+    }
+
+    login() {
+        this.$auth.loginWithRedirect();
+    }
+
+    logout() {
+        this.$auth.logout();
+    }
 }
 </script>
+
+<style lang="scss" scoped>
+a.logout,
+a.login {
+    cursor: pointer;
+    text-decoration: underline;
+}
+</style>

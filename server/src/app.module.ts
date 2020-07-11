@@ -6,8 +6,8 @@ import {
     DrivineModuleOptions
 } from "@liberation-data/drivine/DrivineModule";
 import { DatabaseRegistry } from "@liberation-data/drivine/connection/DatabaseRegistry";
-import { RecipesModule } from "./recipes/recipes.module";
-import { AuthModule } from "./auth/auth.module";
+import { AuthModule } from "@/auth";
+import { RecipesModule } from "@/recipes";
 
 const devMode = process.env.NODE_ENV === "development";
 const autoSchemaFile = join(process.cwd(), "src/schema.gql");
