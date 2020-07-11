@@ -6,5 +6,5 @@ import { UpdateRecipeInput } from "./update-recipe.input";
 export class AddRecipeInput extends UpdateRecipeInput {
     @Field()
     @MinLength(3)
-    title!: string;
+    readonly title!: string;
 }

@@ -1,29 +1,29 @@
-import { InputType, Field } from "@nestjs/graphql";
+import { InputType, Field, ID } from "@nestjs/graphql";
 import { MinLength } from "class-validator";
-import { UpdateRecipeProperties } from "../recipes.repository";
+import { UpdateRecipeProperties as IUpdateRecipeProperties } from "../recipes.repository";
 import { RecipeId } from "../recipe.model";
 
 @InputType()
-export class UpdateRecipeInput implements UpdateRecipeProperties {
-    @Field()
-    id!: RecipeId;
+export class UpdateRecipeInput implements IUpdateRecipeProperties {
+    @Field(() => ID)
+    readonly id!: RecipeId;
 
     @Field({ nullable: true })
     @MinLength(3)
-    title?: string;
+    readonly title?: string;
 
     @Field({ nullable: true })
-    description?: string;
+    readonly description?: string;
 
     @Field(() => [String], { nullable: true })
-    method?: [string];
+    readonly method?: [string];
 
     @Field(() => [String], { nullable: true })
-    ingredients?: [string];
+    readonly ingredients?: [string];
 
     @Field({ nullable: true })
-    serves?: Number;
+    readonly serves?: Number;
 
     @Field({ nullable: true })
-    takesTime?: Number;
+    readonly akesTime?: Number;
 }
