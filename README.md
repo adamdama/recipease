@@ -1,6 +1,6 @@
 # Recipease
 
-An app to create, store and share recipease.
+An app to create, store and share recipes.
 
 ## Technologies
 
@@ -8,6 +8,7 @@ An app to create, store and share recipease.
 -   Vue.js
 -   TypeScript
 -   Node
+-   Nest.js
 -   GraphQL
 -   Neo4j
 
