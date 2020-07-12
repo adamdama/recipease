@@ -40,16 +40,16 @@ export class RecipesResolver {
 
     @Query(() => GetRecipeResponse, { name: "recipe" })
     async getRecipe(
-        @Args() { params }: GetRecipeArgs,
+        @Args() args: GetRecipeArgs,
         @CurrentUser() user: User
     ): Promise<GetRecipeResponse> {
         const recipe = await this.recipesRepository.findOneById({
-            id: params.id,
+            id: args.recipe.id,
             userId: user.id
         });
         if (!recipe) {
             throw new NotFoundException(
-                `Cannot find recipe with id (${params.id})`
+                `Cannot find recipe with id (${args.recipe.id})`
             );
         }
         return { recipe };

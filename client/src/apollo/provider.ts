@@ -38,6 +38,7 @@ const errorLink = onError(({ graphQLErrors, networkError }) => {
 });
 
 // Setup link to retry failed requests
+// TODO: refresh the token
 const retryLink = new RetryLink({
     // delay: {
     //     initial: 300,
@@ -90,8 +91,9 @@ export function createApolloProvider() {
                 // fetchPolicy: 'cache-and-network',
             }
         },
-        errorHandler() {
+        errorHandler(args) {
             // No need for errorHandler as we have the error link
+            console.log(args);
         }
     });
 

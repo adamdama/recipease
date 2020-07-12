@@ -1,0 +1,13 @@
+overwrite: true
+schema: "../server/src/schema.gql"
+documents: "src/**/*.{gql,graphql}"
+generates:
+  src/generated/graphql.ts:
+    plugins:
+      - "typescript"
+      - "typescript-operations"
+      # Disbaled due to TS issues in @vue/apollo-composable: https://github.com/vuejs/vue-apollo/issues/921
+      # - "typescript-vue-apollo"
+      - "fragment-matcher"
+    config:
+      immutableTypes: true

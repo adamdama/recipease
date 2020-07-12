@@ -3,6 +3,6 @@ import { FindRecipeParamsInput } from "./find-recipe-params.input";
 
 @ArgsType()
 export class FindRecipeArgs {
-    @Field()
-    readonly params!: FindRecipeParamsInput;
+    @Field({ nullable: true })
+    readonly params?: FindRecipeParamsInput;
 }

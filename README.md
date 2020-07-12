@@ -115,6 +115,7 @@ We highly recommend using Microsoft Visual Studio Code (VSCode) for the best wor
 -   Vetur
 -   Node.js modules intellisense
 -   GraphQL for VSCode
+-   Path Intellisense
 
 For quality of life improvements:
 

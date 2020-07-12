@@ -21,8 +21,8 @@ interface IFindMatchArgs extends Partial<IFindOneByIdArgs> {}
 export const RECIPE_NODE_LABEL = "Recipe";
 export const CREATED_RELATIONSHIP_LABEL = "CREATED";
 
-export interface UpdateRecipeProperties {
-    readonly id?: string;
+export interface IUpdateRecipeProperties {
+    readonly id: string;
 
     readonly title?: string;
 
@@ -37,7 +37,8 @@ export interface UpdateRecipeProperties {
     readonly takesTime?: Number;
 }
 
-export interface CreateRecipeProperties extends UpdateRecipeProperties {
+export interface ICreateRecipeProperties
+    extends Omit<IUpdateRecipeProperties, "id"> {
     title: string;
 }
 
@@ -98,7 +99,7 @@ export class RecipesRepository {
     }
 
     async createOne(
-        properties: CreateRecipeProperties,
+        properties: ICreateRecipeProperties,
         userId: UserId
     ): Promise<Recipe> {
         const id = generateId();
@@ -125,7 +126,7 @@ export class RecipesRepository {
 
     async updateOne(
         id: RecipeId,
-        properties: UpdateRecipeProperties,
+        properties: IUpdateRecipeProperties,
         userId: UserId
     ): Promise<Recipe> {
         // Ensure the id cannot be changed

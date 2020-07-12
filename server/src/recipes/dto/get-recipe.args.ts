@@ -1,8 +1,8 @@
 import { Field, ArgsType } from "@nestjs/graphql";
-import { GetRecipeParamsInput } from "./get-recipe-params.input";
+import { GetRecipeInput } from "./get-recipe.input";
 
 @ArgsType()
 export class GetRecipeArgs {
     @Field()
-    readonly params!: GetRecipeParamsInput;
+    readonly recipe!: GetRecipeInput;
 }
