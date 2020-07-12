@@ -7,6 +7,14 @@
     "noImplicitReturns": true,
     "resolveJsonModule": true,
     "sourceMap": true,
-    "strict": true
+    "strict": true,
+    // For Vetur to find paths in VSCode. This gets overwritten in both ./server
+    //  and ./client to reference the correct paths in each sub-project
+    //  Ref: https://github.com/vuejs/vetur/blob/master/docs/FAQ.md#vetur-cant-recognize-components-imported-using-webpacks-alias
+    // Can be changed when this issue is resolved: https://github.com/vuejs/vetur/issues/762
+    "baseUrl": "./client",
+    "paths": {
+      "@/*": ["src/*"]
+    }
   }
 }

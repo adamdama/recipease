@@ -38,6 +38,7 @@ const errorLink = onError(({ graphQLErrors, networkError }) => {
 });
 
 // Setup link to retry failed requests
+// TODO: refresh the token
 const retryLink = new RetryLink({
     // delay: {
     //     initial: 300,

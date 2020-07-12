@@ -3,7 +3,6 @@
 # ------------------------------------------------------
 
 input AddRecipeInput {
-    id: String!
     title: String!
     description: String
     method: [String!]
@@ -12,14 +11,34 @@ input AddRecipeInput {
     takesTime: Float
 }
 
+type AddRecipeResponse {
+    recipe: Recipe!
+}
+
+input FindRecipeParamsInput {
+    titleMatch: String
+}
+
+type FindRecipeResponse {
+    recipes: [Recipe]!
+}
+
+input GetRecipeInput {
+    id: ID!
+}
+
+type GetRecipeResponse {
+    recipe: Recipe!
+}
+
 type Mutation {
-    addRecipe(recipe: AddRecipeInput!): Recipe!
-    updateRecipe(recipe: UpdateRecipeInput!): Recipe!
+    addRecipe(recipe: AddRecipeInput!): AddRecipeResponse!
+    updateRecipe(recipe: UpdateRecipeInput!): UpdateRecipeResponse!
 }
 
 type Query {
-    recipes: [Recipe]!
-    recipe(id: ID!): Recipe!
+    recipes(params: FindRecipeParamsInput): FindRecipeResponse!
+    recipe(recipe: GetRecipeInput!): GetRecipeResponse!
 }
 
 type Recipe {
@@ -34,11 +53,15 @@ type Recipe {
 }
 
 input UpdateRecipeInput {
-    id: String!
-    title: String
+    title: String!
     description: String
     method: [String!]
     ingredients: [String!]
     serves: Float
     takesTime: Float
+    id: ID!
+}
+
+type UpdateRecipeResponse {
+    recipe: Recipe!
 }

@@ -7,40 +7,38 @@ import { UserId, USER_LABEL as USER_NODE_LABEL } from "@/auth/user.model";
 import { Query, node, relation } from "cypher-query-builder";
 import { Recipe, RecipeId } from "./recipe.model";
 
-export interface FindArgs {
+export interface IFindArgs {
     userId?: UserId;
 }
 
-export interface FindOneByIdArgs {
+export interface IFindOneByIdArgs {
     id: RecipeId;
     userId?: UserId;
 }
 
-interface FindMatchArgs {
-    id?: RecipeId;
-    userId?: UserId;
-}
+interface IFindMatchArgs extends Partial<IFindOneByIdArgs> {}
 
 export const RECIPE_NODE_LABEL = "Recipe";
 export const CREATED_RELATIONSHIP_LABEL = "CREATED";
 
-export type UpdateRecipeProperties = {
-    id?: string;
+export interface IUpdateRecipeProperties {
+    readonly id: string;
 
-    title?: string;
+    readonly title?: string;
 
-    description?: string;
+    readonly description?: string;
 
-    method?: [string];
+    readonly method?: [string];
 
-    ingredients?: [string];
+    readonly ingredients?: [string];
 
-    serves?: Number;
+    readonly serves?: Number;
 
-    takesTime?: Number;
-};
+    readonly takesTime?: Number;
+}
 
-export interface CreateRecipeProperties extends UpdateRecipeProperties {
+export interface ICreateRecipeProperties
+    extends Omit<IUpdateRecipeProperties, "id"> {
     title: string;
 }
 
@@ -58,7 +56,7 @@ export class RecipesRepository {
         readonly persistenceManager: PersistenceManager
     ) {}
 
-    private getFindMatch(args?: FindMatchArgs) {
+    private getFindMatch(args?: IFindMatchArgs) {
         const recipeProps = args?.id ? { id: args.id } : undefined;
         const match = [node("r", RECIPE_NODE_LABEL, recipeProps)];
         if (args?.userId) {
@@ -71,7 +69,7 @@ export class RecipesRepository {
         return match;
     }
 
-    async find(args?: FindArgs): Promise<Recipe[]> {
+    async find(args?: IFindArgs): Promise<Recipe[]> {
         const { query, params } = new Query()
             .match(this.getFindMatch(args))
             .return("r")
@@ -86,7 +84,7 @@ export class RecipesRepository {
         return result;
     }
 
-    async findOneById(args: FindOneByIdArgs): Promise<Recipe | undefined> {
+    async findOneById(args: IFindOneByIdArgs): Promise<Recipe | undefined> {
         const { query, params } = new Query()
             .match(this.getFindMatch(args))
             .return("r")
@@ -101,7 +99,7 @@ export class RecipesRepository {
     }
 
     async createOne(
-        properties: CreateRecipeProperties,
+        properties: ICreateRecipeProperties,
         userId: UserId
     ): Promise<Recipe> {
         const id = generateId();
@@ -128,7 +126,7 @@ export class RecipesRepository {
 
     async updateOne(
         id: RecipeId,
-        properties: UpdateRecipeProperties,
+        properties: IUpdateRecipeProperties,
         userId: UserId
     ): Promise<Recipe> {
         // Ensure the id cannot be changed

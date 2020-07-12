@@ -19,10 +19,12 @@
 12. CSRF protection
 13. ~~Refresh auth token / logout~~
 14. Depue / Link email addresses. Stop people creating two accounts for one email
-15. GQL Input validation decorators
-16. Hide query parameters from errors when not in dev mode
-17. GraphQL Scalars and directives e.g Date scalar and directive to convert unix timestamp
-18. Stop sensitive informaiton being leaked out in errors on prod
+15. Hide query parameters from errors when not in dev mode
+16. GraphQL Scalars and directives e.g Date scalar and directive to convert unix timestamp
+17. Stop sensitive informaiton being leaked out in errors on prod
+18. ESLint for GraphQL queries - client
+19. ESLint for GraphQL scheme - server
+20. Typescript types in .vue
 
 ## Consider
 

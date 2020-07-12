@@ -4,5 +4,5 @@ import { AddRecipeInput } from "./add-recipe.input";
 @ArgsType()
 export class AddRecipeArgs {
     @Field()
-    recipe!: AddRecipeInput;
+    readonly recipe!: AddRecipeInput;
 }
