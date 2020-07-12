@@ -25,7 +25,7 @@
     "gql-codegen": "graphql-codegen --config codegen.yml",
     "test": "yarn -s test:unit",
     "test:unit": "vue-cli-service test:unit",
-    "lint": "yarn -s gql-codegen && vue-cli-service lint --fix"
+    "lint": "yarn -s gql-codegen && NODE_ENV=production vue-cli-service lint --fix"
   },
   "dependencies": {
     "@auth0/auth0-spa-js": "^1.9.0",

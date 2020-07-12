@@ -91,9 +91,8 @@ export function createApolloProvider() {
                 // fetchPolicy: 'cache-and-network',
             }
         },
-        errorHandler(args) {
+        errorHandler() {
             // No need for errorHandler as we have the error link
-            console.log(args);
         }
     });
 
