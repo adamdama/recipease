@@ -1,7 +1,7 @@
 import { InputType, Field } from "@nestjs/graphql";
 
 @InputType()
-export class FindRecipeParamsInput {
+export class FindRecipesParamsInput {
     @Field({ nullable: true })
     readonly titleMatch?: string;
 }

@@ -27,6 +27,8 @@
 20. Typescript types in .vue
 21. Nestjs GQL CLI plugin
 
+TESTS, TESTS, TESTS
+
 ## Consider
 
 1. Add Lerna when there is shared code

@@ -1,6 +1,6 @@
 import { InputType, Field } from "@nestjs/graphql";
 import { MinLength } from "class-validator";
-import { ICreateRecipe } from "../recipes.interface";
+import { ICreateRecipe } from "../recipe.interface";
 
 @InputType()
 export class AddRecipeInput implements ICreateRecipe {

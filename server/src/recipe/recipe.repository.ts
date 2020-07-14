@@ -6,7 +6,7 @@ import { generateId, prefixObjectKeys } from "@/utils";
 import { UserId, USER_NODE_LABEL } from "@/auth/user.model";
 import { Query, node, relation } from "cypher-query-builder";
 import { Recipe, RecipeId } from "./recipe.model";
-import { IUpdateRecipe, ICreateRecipe } from "./recipes.interface";
+import { IUpdateRecipe, ICreateRecipe } from "./recipe.interface";
 
 export interface IFindArgs {
     userId?: UserId;
@@ -25,7 +25,7 @@ export const CREATED_RELATIONSHIP_LABEL = "CREATED";
 // TODO: Pagination and limits
 
 @Injectable()
-export class RecipesRepository {
+export class RecipeRepository {
     constructor(
         @InjectPersistenceManager()
         readonly persistenceManager: PersistenceManager
