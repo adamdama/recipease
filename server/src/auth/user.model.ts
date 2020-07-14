@@ -2,10 +2,10 @@ import { Flavour } from "@/types/flavour";
 import { DecodedJwtUser } from "./types.d";
 
 export type UserId = Flavour<string, "User">;
-export const USER_LABEL = "User";
+export const USER_NODE_LABEL = "User";
 
 export class User {
-    readonly id: string;
+    readonly id: UserId;
 
     readonly email: string;
 

@@ -1,10 +1,11 @@
 import { Field, ID, ObjectType } from "@nestjs/graphql";
 import { Flavour } from "@/types/flavour";
+import { ITimestampable } from "@/common/model.interface";
 
 export type RecipeId = Flavour<string, "Recipe">;
 
 @ObjectType()
-export class Recipe {
+export class Recipe implements ITimestampable {
     @Field(() => ID)
     readonly id!: RecipeId;
 
@@ -12,7 +13,10 @@ export class Recipe {
     title!: string;
 
     @Field()
-    created!: string;
+    createdAt!: string;
+
+    @Field({ nullable: true })
+    modifiedAt?: string;
 
     @Field({ nullable: true })
     description?: string;
