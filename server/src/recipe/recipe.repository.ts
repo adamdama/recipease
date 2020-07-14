@@ -2,10 +2,11 @@ import { Injectable } from "@nestjs/common";
 import { QuerySpecification } from "@liberation-data/drivine/query/QuerySpecification";
 import { InjectPersistenceManager } from "@liberation-data/drivine/DrivineInjectionDecorators";
 import { PersistenceManager } from "@liberation-data/drivine/manager/PersistenceManager";
-import { generateId } from "@/utils";
-import { UserId, USER_LABEL as USER_NODE_LABEL } from "@/auth/user.model";
+import { generateId, prefixObjectKeys } from "@/utils";
+import { UserId, USER_NODE_LABEL } from "@/auth/user.model";
 import { Query, node, relation } from "cypher-query-builder";
 import { Recipe, RecipeId } from "./recipe.model";
+import { IUpdateRecipe, ICreateRecipe } from "./recipe.interface";
 
 export interface IFindArgs {
     userId?: UserId;
@@ -21,42 +22,16 @@ interface IFindMatchArgs extends Partial<IFindOneByIdArgs> {}
 export const RECIPE_NODE_LABEL = "Recipe";
 export const CREATED_RELATIONSHIP_LABEL = "CREATED";
 
-export interface IUpdateRecipeProperties {
-    readonly id: string;
-
-    readonly title?: string;
-
-    readonly description?: string;
-
-    readonly method?: [string];
-
-    readonly ingredients?: [string];
-
-    readonly serves?: Number;
-
-    readonly takesTime?: Number;
-}
-
-export interface ICreateRecipeProperties
-    extends Omit<IUpdateRecipeProperties, "id"> {
-    title: string;
-}
-
-const prefixObjectKeys = (obj: Record<string, any>, prefix: string) =>
-    Object.fromEntries(
-        Object.entries(obj).map(([key, value]) => [`${prefix}${key}`, value])
-    );
-
 // TODO: Pagination and limits
 
 @Injectable()
-export class RecipesRepository {
+export class RecipeRepository {
     constructor(
         @InjectPersistenceManager()
         readonly persistenceManager: PersistenceManager
     ) {}
 
-    private getFindMatch(args?: IFindMatchArgs) {
+    private getFindQuery(args?: IFindMatchArgs) {
         const recipeProps = args?.id ? { id: args.id } : undefined;
         const match = [node("r", RECIPE_NODE_LABEL, recipeProps)];
         if (args?.userId) {
@@ -66,14 +41,11 @@ export class RecipesRepository {
             );
         }
 
-        return match;
+        return new Query().match(match).return("r").buildQueryObject();
     }
 
     async find(args?: IFindArgs): Promise<Recipe[]> {
-        const { query, params } = new Query()
-            .match(this.getFindMatch(args))
-            .return("r")
-            .buildQueryObject();
+        const { query, params } = this.getFindQuery(args);
 
         const result = await this.persistenceManager.query<Recipe>(
             new QuerySpecification<Recipe>()
@@ -85,21 +57,18 @@ export class RecipesRepository {
     }
 
     async findOneById(args: IFindOneByIdArgs): Promise<Recipe | undefined> {
-        const { query, params } = new Query()
-            .match(this.getFindMatch(args))
-            .return("r")
-            .buildQueryObject();
+        const { query, params } = this.getFindQuery(args);
 
         return this.persistenceManager.maybeGetOne<Recipe>(
             new QuerySpecification<Recipe>()
                 .withStatement(query)
-                .bind({ ...params })
+                .bind(params)
                 .transform(Recipe)
         );
     }
 
     async createOne(
-        properties: ICreateRecipeProperties,
+        properties: ICreateRecipe,
         userId: UserId
     ): Promise<Recipe> {
         const id = generateId();
@@ -126,7 +95,7 @@ export class RecipesRepository {
 
     async updateOne(
         id: RecipeId,
-        properties: IUpdateRecipeProperties,
+        properties: IUpdateRecipe,
         userId: UserId
     ): Promise<Recipe> {
         // Ensure the id cannot be changed

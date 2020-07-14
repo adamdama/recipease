@@ -10,7 +10,7 @@
     "allowSyntheticDefaultImports": true,
     "sourceMap": true,
     "outDir": "./dist",
-    "types": ["cypher-query-builder/typings/any-observable"],
+    "types": ["cypher-query-builder/typings/any-observable", "jest"],
     "paths": {
       "@/*": ["src/*"]
     }

@@ -29,6 +29,8 @@ https://neo4j.com/download/
 
 Once it is installed and open you will need ot create a new project (there is a button at the top). In the main pane click "Add Database" and then choose "Create a Local Graph". Give it a name and set a password, noting the password for later. Once the graph is created click the start button to get it going.
 
+The final step in setting up the DB is to run the files from the `server/db` directory. The files in this directory contain Cypher queries for priming the database, for example adding the required constraints. You can run the files using the Neo4j desktop app by opening your project and pasting the contents of the files into the command line interface at the top of the browser.
+
 That's it, the DB is now ready to run the app.
 
 ### Env file

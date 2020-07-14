@@ -4,10 +4,10 @@ import { CurrentUser } from "@/auth/current-user.decorator";
 import { GraphQLAuthGuard } from "@/auth/graphql-auth.guard";
 import { User } from "@/auth/user.model";
 import { Recipe } from "./recipe.model";
-import { RecipesRepository } from "./recipes.repository";
+import { RecipeRepository } from "./recipe.repository";
 import {
-    FindRecipeResponse,
-    FindRecipeArgs,
+    FindRecipesResponse,
+    FindRecipesArgs,
     GetRecipeResponse,
     GetRecipeArgs,
     AddRecipeResponse,
@@ -21,17 +21,17 @@ import {
 
 @UseGuards(GraphQLAuthGuard)
 @Resolver(() => Recipe)
-export class RecipesResolver {
-    constructor(private readonly recipesRepository: RecipesRepository) {}
+export class RecipeResolver {
+    constructor(private readonly recipeRepository: RecipeRepository) {}
 
     // TODO paginate this
-    @Query(() => FindRecipeResponse, { name: "recipes" })
+    @Query(() => FindRecipesResponse, { name: "recipes" })
     async findRecipes(
-        @Args() args: FindRecipeArgs,
+        @Args() args: FindRecipesArgs,
         @CurrentUser() user: User
-    ): Promise<FindRecipeResponse> {
+    ): Promise<FindRecipesResponse> {
         return {
-            recipes: await this.recipesRepository.find({
+            recipes: await this.recipeRepository.find({
                 ...args,
                 userId: user.id
             })
@@ -43,7 +43,7 @@ export class RecipesResolver {
         @Args() args: GetRecipeArgs,
         @CurrentUser() user: User
     ): Promise<GetRecipeResponse> {
-        const recipe = await this.recipesRepository.findOneById({
+        const recipe = await this.recipeRepository.findOneById({
             id: args.recipe.id,
             userId: user.id
         });
@@ -61,7 +61,7 @@ export class RecipesResolver {
         @CurrentUser() user: User
     ): Promise<AddRecipeResponse> {
         return {
-            recipe: await this.recipesRepository.createOne(args.recipe, user.id)
+            recipe: await this.recipeRepository.createOne(args.recipe, user.id)
         };
     }
 
@@ -70,7 +70,7 @@ export class RecipesResolver {
         @Args() args: UpdateRecipeArgs,
         @CurrentUser() user: User
     ): Promise<UpdateRecipeResponse> {
-        const recipe = await this.recipesRepository.updateOne(
+        const recipe = await this.recipeRepository.updateOne(
             args.recipe.id,
             args.recipe,
             user.id

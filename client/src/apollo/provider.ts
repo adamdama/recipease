@@ -70,6 +70,7 @@ export function createApolloProvider() {
         };
     });
 
+    // TODO: use ApolloLink.from: https://www.apollographql.com/docs/link/composition/#directional
     // Concat all links together for use
     const link = errorLink
         .concat(retryLink)
