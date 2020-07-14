@@ -15,11 +15,11 @@ type AddRecipeResponse {
     recipe: Recipe!
 }
 
-input FindRecipeParamsInput {
+input FindRecipesParamsInput {
     titleMatch: String
 }
 
-type FindRecipeResponse {
+type FindRecipesResponse {
     recipes: [Recipe]!
 }
 
@@ -37,14 +37,15 @@ type Mutation {
 }
 
 type Query {
-    recipes(params: FindRecipeParamsInput): FindRecipeResponse!
+    recipes(params: FindRecipesParamsInput): FindRecipesResponse!
     recipe(recipe: GetRecipeInput!): GetRecipeResponse!
 }
 
 type Recipe {
     id: ID!
     title: String!
-    created: String!
+    createdAt: String!
+    modifiedAt: String
     description: String
     method: [String!]
     ingredients: [String!]

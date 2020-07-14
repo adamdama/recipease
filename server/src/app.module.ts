@@ -7,7 +7,7 @@ import {
 } from "@liberation-data/drivine/DrivineModule";
 import { DatabaseRegistry } from "@liberation-data/drivine/connection/DatabaseRegistry";
 import { AuthModule } from "@/auth";
-import { RecipesModule } from "@/recipe";
+import { RecipeModule } from "@/recipe";
 
 const devMode = process.env.NODE_ENV === "development";
 const autoSchemaFile = join(process.cwd(), "src/schema.gql");
@@ -28,7 +28,7 @@ const gqlOptions: GqlModuleOptions = {
             connectionProviders: [DatabaseRegistry.buildOrResolveFromEnv()]
         }),
         GraphQLModule.forRoot(gqlOptions),
-        RecipesModule
+        RecipeModule
     ]
 })
 export class AppModule {}

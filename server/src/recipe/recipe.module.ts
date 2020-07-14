@@ -6,4 +6,4 @@ import { RecipeRepository } from "./recipe.repository";
 @Module({
     providers: [RecipeResolver, RecipeRepository, JwtStrategy]
 })
-export class RecipesModule {}
+export class RecipeModule {}
